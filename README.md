@@ -7,6 +7,11 @@ TinyKeys combines gamification, animations, and intuitive UX to create an engagi
 Built for developers, designers, educators, and product thinkers who want to explore how far pure HTML, CSS, and JavaScript can go.
 
 ---
+## 🌐 Online Demo
+
+No setup, view live on GitHub Pages:
+
+[https://vijopv83.github.io/TinyKeys/](https://vijopv83.github.io/TinyKeys/)
 
 ## 📚 Table of Contents
 
