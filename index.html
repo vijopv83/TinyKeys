@@ -1785,24 +1785,60 @@ const CATS = {
     {l:'99',w:'Ninety-nine',e:'🌴',obj:'tree'},
     {l:'100',w:'One hundred',e:'🎯',obj:'target'}
   ]},
-  // Shapes: one word per letter — simpler, less confusing
+  // ── Shapes: one category, 2D only, age-tiered ──────────────
   shapes:{label:'Shapes',icon:'🔷',color:'#2980B9',bg:'#D6EAF8',fill:'#2980B9',cards:[
-    {l:'C',w:'Circle',e:'🔵'},{l:'S',w:'Square',e:'🔲'},{l:'T',w:'Triangle',e:'🔺'},
-    {l:'R',w:'Rectangle',e:'📐'},{l:'D',w:'Diamond',e:'💎'},{l:'H',w:'Heart',e:'❤️'},
-    {l:'O',w:'Oval',e:'🥚'},{l:'S',w:'Star',e:'⭐'},{l:'A',w:'Arrow',e:'🏹'},
-    {l:'P',w:'Pentagon',e:'🏠'},{l:'H',w:'Hexagon',e:'🔷'},{l:'C',w:'Cube',e:'🎲'},
-    {l:'P',w:'Pyramid',e:'🏔️'},{l:'C',w:'Cone',e:'🍦'},{l:'L',w:'Line',e:'〰️'},
-    {l:'S',w:'Spiral',e:'🌀'},{l:'Z',w:'Zigzag',e:'🔀'},{l:'W',w:'Crescent',e:'🌛'}
+    /* tier 1 — core 2D (age <6): circle, triangle, square, rectangle */
+    {l:'C',w:'Circle',        e:'⭕',tier:1,svg:'circle'},
+    {l:'T',w:'Triangle',      e:'🔺',tier:1,svg:'triangle'},
+    {l:'S',w:'Square',        e:'🟦',tier:1,svg:'square'},
+    {l:'R',w:'Rectangle',     e:'🟦',tier:1,svg:'rectangle'},
+    /* tier 2 — familiar 2D (age 6-7): heart, star, ellipse + quad family */
+    {l:'H',w:'Heart',         e:'❤️',tier:2,svg:'heart'},
+    {l:'S',w:'Star',          e:'⭐',tier:2,svg:'star'},
+    {l:'E',w:'Ellipse',       e:'⭕',tier:2,svg:'ellipse'},
+    {l:'P',w:'Parallelogram', e:'🟦',tier:2,svg:'parallelogram'},
+    {l:'R',w:'Rhombus',       e:'🔷',tier:2,svg:'rhombus'},
+    {l:'T',w:'Trapezium',     e:'🔷',tier:2,svg:'trapezium'},
+    {l:'K',w:'Kite',          e:'🔷',tier:2,svg:'kite'},
+    /* tier 3 — polygons + crescent (age 8-10) */
+    {l:'P',w:'Pentagon',      e:'⬠',tier:3,svg:'pentagon'},
+    {l:'H',w:'Hexagon',       e:'⬡',tier:3,svg:'hexagon'},
+    {l:'C',w:'Crescent',      e:'🌙',tier:3,svg:'crescent'},
+    /* tier 4 — advanced polygons (age 11+) */
+    {l:'H',w:'Heptagon',      e:'⬡',tier:4,svg:'heptagon'},
+    {l:'O',w:'Octagon',       e:'⬡',tier:4,svg:'octagon'},
+    {l:'N',w:'Nonagon',       e:'⬡',tier:4,svg:'nonagon'},
+    {l:'D',w:'Decagon',       e:'⬡',tier:4,svg:'decagon'},
   ]},
+
   // Colors: one per letter, age-appropriate first (basic ones first in deck)
   colors:{label:'Colors',icon:'🎨',color:'#E84393',bg:'#FFE0F0',fill:'#E84393',cards:[
-    {l:'R',w:'Red',e:'🔴'},{l:'B',w:'Blue',e:'🔵'},{l:'G',w:'Green',e:'🟢'},
-    {l:'Y',w:'Yellow',e:'🟡'},{l:'O',w:'Orange',e:'🟠'},{l:'P',w:'Purple',e:'🟣'},
-    {l:'P',w:'Pink',e:'🌸'},{l:'W',w:'White',e:'⬜'},{l:'B',w:'Black',e:'⬛'},
-    {l:'B',w:'Brown',e:'🟤'},{l:'G',w:'Grey',e:'🩶'},{l:'G',w:'Gold',e:'🌟'},
-    {l:'T',w:'Teal',e:'🩵'},{l:'N',w:'Navy',e:'🌊'},{l:'L',w:'Lavender',e:'💜'},
-    {l:'S',w:'Silver',e:'🔘'},{l:'C',w:'Cream',e:'🍦'},{l:'L',w:'Lime',e:'🍏'},
-    {l:'M',w:'Maroon',e:'🍷'},{l:'V',w:'Violet',e:'💜'},{l:'I',w:'Indigo',e:'🫐'}
+    /* tier 1 — primaries (beginner, age <4) */
+    {l:'R',w:'Red',   e:'🟥',hex:'#E53935',tier:1},
+    {l:'B',w:'Blue',  e:'🟦',hex:'#1E88E5',tier:1},
+    {l:'Y',w:'Yellow',e:'🟨',hex:'#FDD835',tier:1},
+    /* tier 2 — secondaries (easy, age 4-5) */
+    {l:'G',w:'Green', e:'🟩',hex:'#43A047',tier:2},
+    {l:'O',w:'Orange',e:'🟧',hex:'#FB8C00',tier:2},
+    {l:'P',w:'Purple',e:'🟪',hex:'#8E24AA',tier:2},
+    /* tier 3 — basic extras (medium, age 6-7) */
+    {l:'P',w:'Pink',  e:'🩷',hex:'#EC407A',tier:3},
+    {l:'W',w:'White', e:'⬜',hex:'#F5F5F5',tier:3},
+    {l:'B',w:'Black', e:'⬛',hex:'#212121',tier:3},
+    {l:'B',w:'Brown', e:'🟫',hex:'#6D4C41',tier:3},
+    /* tier 4 — extended (hard, age 8-10) */
+    {l:'G',w:'Grey',  e:'🩶',hex:'#757575',tier:4},
+    {l:'G',w:'Gold',  e:'🌟',hex:'#FFB300',tier:4},
+    {l:'T',w:'Teal',  e:'🩵',hex:'#00897B',tier:4},
+    {l:'N',w:'Navy',  e:'🔷',hex:'#1565C0',tier:4},
+    {l:'L',w:'Lavender',e:'💜',hex:'#9575CD',tier:4},
+    /* tier 5 — tertiary (expert, age 11+) */
+    {l:'S',w:'Silver',e:'🔘',hex:'#B0BEC5',tier:5},
+    {l:'C',w:'Cream', e:'🟡',hex:'#FFF9C4',tier:5},
+    {l:'L',w:'Lime',  e:'🟢',hex:'#C6EF00',tier:5},
+    {l:'M',w:'Maroon',e:'🟥',hex:'#880E4F',tier:5},
+    {l:'V',w:'Violet',e:'🟣',hex:'#6A1B9A',tier:5},
+    {l:'I',w:'Indigo',e:'🔵',hex:'#283593',tier:5},
   ]},
   // A-Z words: one vivid word per letter, age 4+
   alphabet_words:{label:'A–Z words',icon:'✨',color:'#1976D2',bg:'#E3F2FD',fill:'#1976D2',cards:[
@@ -2807,12 +2843,135 @@ function maxNumberForAge(cx){
   return 100;                                // 11+: 0–100
 }
 
+// Render a pure CSS color circle for color cards
+function colorSwatch(hex, size='80px'){
+  const border=hex==='#F5F5F5'||hex==='#FFF9C4'?'2px solid #ccc':'none';
+  return `<div style="width:${size};height:${size};border-radius:50%;background:${hex};border:${border};box-shadow:0 4px 16px rgba(0,0,0,.18);display:inline-block;flex-shrink:0"></div>`;
+}
+
+// SVG shapes — clean geometric drawings, no objects
+function shapeSvg(shape, size='88px', color){
+  const SHAPE_COLORS={
+    // Basic shapes
+    circle:'#D4A017', triangle:'#C0392B', square:'#2980B9', rectangle:'#117A65',
+    parallelogram:'#D4A017', rhombus:'#8E44AD', trapezium:'#E67E22', kite:'#16A085',
+    // Triangles
+    equilateral:'#C0392B', isosceles:'#E74C3C', scalene:'#922B21',
+    acute:'#F1948A', right_tri:'#2C3E50', obtuse:'#A93226',
+    // Polygons
+    pentagon:'#117A65', hexagon:'#1A8754', heptagon:'#148F77',
+    octagon:'#0E6655', nonagon:'#0B5345', decagon:'#117A65',
+    // Curved
+    ellipse:'#6C3483', semicircle:'#7D3C98', sector:'#9B59B6', crescent:'#5B2C6F',
+  };
+  const f = color || SHAPE_COLORS[shape] || '#2980B9';
+  const s = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="${size}" height="${size}">`;
+
+  // Regular polygon helper
+  const poly = (n, r=44, cx=50, cy=50, rot=0) => {
+    const pts = Array.from({length:n}, (_,i) => {
+      const a = rot + 2*Math.PI*i/n - Math.PI/2;
+      return `${(cx+r*Math.cos(a)).toFixed(1)},${(cy+r*Math.sin(a)).toFixed(1)}`;
+    }).join(' ');
+    return `<polygon points="${pts}" fill="${f}"/>`;
+  };
+
+  const shapes = {
+    // ── BASIC 2D ──────────────────────────────────────────
+    circle:
+      `${s}<circle cx="50" cy="50" r="43" fill="${f}"/></svg>`,
+    // Equilateral-style triangle — symmetric, wide base
+    triangle:
+      `${s}<polygon points="50,8 92,90 8,90" fill="${f}"/></svg>`,
+    // Square — equal sides with tick marks on each side
+    square:
+      `${s}<rect x="12" y="12" width="76" height="76" fill="${f}"/>
+       <line x1="46" y1="12" x2="54" y2="12" stroke="white" stroke-width="3" opacity=".7"/>
+       <line x1="46" y1="88" x2="54" y2="88" stroke="white" stroke-width="3" opacity=".7"/>
+       <line x1="12" y1="46" x2="12" y2="54" stroke="white" stroke-width="3" opacity=".7"/>
+       <line x1="88" y1="46" x2="88" y2="54" stroke="white" stroke-width="3" opacity=".7"/></svg>`,
+    // Rectangle — clearly wider than tall
+    // Rectangle — very wide and short, unmistakably different from square
+    rectangle:
+      `${s}<rect x="4" y="33" width="92" height="34" fill="${f}"/></svg>`,
+    // Parallelogram — slanted to the right
+    // Parallelogram — strong rightward slant, clearly not a rectangle
+    parallelogram:
+      `${s}<polygon points="30,18 94,18 70,82 6,82" fill="${f}"/></svg>`,
+    // Rhombus — diamond, slightly wider than tall
+    rhombus:
+      `${s}<polygon points="50,12 84,50 50,88 16,50" fill="${f}"/></svg>`,
+    // Trapezium — flat top, wider bottom
+    trapezium:
+      `${s}<polygon points="28,24 72,24 90,76 10,76" fill="${f}"/></svg>`,
+    // Kite — wide middle, pointed top and bottom
+    kite:
+      `${s}<polygon points="50,6 80,46 50,94 20,46" fill="${f}"/></svg>`,
+
+    // ── TRIANGLES BY SIDES ────────────────────────────────
+    // Equilateral — all sides equal, perfectly centred
+    equilateral:
+      `${s}<polygon points="50,8 91,76 9,76" fill="${f}"/></svg>`,
+    // Isosceles — two equal sides, narrower apex
+    isosceles:
+      `${s}<polygon points="50,8 78,88 22,88" fill="${f}"/></svg>`,
+    // Scalene — all different sides
+    scalene:
+      `${s}<polygon points="20,84 88,84 60,16" fill="${f}"/></svg>`,
+
+    // ── TRIANGLES BY ANGLES ───────────────────────────────
+    // Acute — all angles less than 90°, wide & low
+    acute:
+      `${s}<polygon points="50,18 88,82 12,82" fill="${f}"/></svg>`,
+    // Right — 90° corner at bottom-left with marker
+    right_tri:
+      `${s}<polygon points="12,88 88,88 12,16" fill="${f}"/>
+       <polyline points="12,72 26,72 26,88" fill="none" stroke="white" stroke-width="2.5" opacity=".7"/></svg>`,
+    // Obtuse — one angle > 90°, very flat and wide
+    obtuse:
+      `${s}<polygon points="8,80 92,80 72,30" fill="${f}"/></svg>`,
+
+    // ── POLYGONS ──────────────────────────────────────────
+    pentagon: `${s}${poly(5, 42)}</svg>`,
+    hexagon:  `${s}${poly(6, 43)}</svg>`,
+    heptagon: `${s}${poly(7, 43)}</svg>`,
+    octagon:  `${s}${poly(8, 43)}</svg>`,
+    nonagon:  `${s}${poly(9, 43)}</svg>`,
+    decagon:  `${s}${poly(10, 43)}</svg>`,
+
+    // ── CURVED SHAPES ─────────────────────────────────────
+    // Ellipse — horizontal, wide and flat
+    ellipse:
+      `${s}<ellipse cx="50" cy="50" rx="46" ry="24" fill="${f}"/></svg>`,
+    // Semicircle — half circle, flat bottom
+    semicircle:
+      `${s}<path d="M8,60 A42,42 0 0,1 92,60 Z" fill="${f}"/>
+       <rect x="8" y="60" width="84" height="2" fill="${f}"/></svg>`,
+    // Sector — pie slice (approx 90°)
+    sector:
+      `${s}<path d="M50,50 L50,8 A42,42 0 0,1 92,50 Z" fill="${f}"/></svg>`,
+    // Crescent — circle minus inner circle
+    crescent:
+      `${s}<path d="M68,18 A36,36 0 1,0 68,82 A24,24 0 1,1 68,18 Z" fill="${f}"/></svg>`,
+  };
+  return shapes[shape] || `<div class="iz-emoji">⬜</div>`;
+}
+
+
+// Return the right visual for a card — shape SVG, color swatch, or emoji
+function cardVisual(c, size='88px', color){
+  if(c.svg) return shapeSvg(c.svg, size, color||'#2980B9');
+  if(c.hex) return colorSwatch(c.hex, size);
+  return `<div class="iz-emoji">${c.e}</div>`;
+}
+
 function buildDeck(catKey){
   const p=getP();
   const cx=currentCx||getComplexity(p);
   deck=[];
   const keys=catKey?[catKey]:Object.keys(CATS);
   const maxNum=maxNumberForAge(cx);
+  const maxColorTier={beginner:1,easy:1,medium:2,hard:3,expert:4}[cx.level]||4;
   keys.forEach(k=>{
     if(!CATS[k])return;
     CATS[k].cards.forEach(c=>{
@@ -2820,6 +2979,10 @@ function buildDeck(catKey){
       if(k==='numbers'&&parseInt(c.l)>maxNum)return;
       // Exclude numbers >10 from spell mode (Twenty-five is 10 chars — too hard)
       if(k==='numbers'&&gMode==='spell'&&parseInt(c.l)>10)return;
+      // Filter colors to age-appropriate tier
+      if(k==='colors'&&c.tier&&c.tier>maxColorTier)return;
+      // Filter shapes to age-appropriate tier
+      if(k==='shapes'&&c.tier&&c.tier>maxColorTier)return;
       deck.push({...c,cat:k});
     });
   });
@@ -2950,7 +3113,7 @@ function renderPlayCard(){
       }
       renderOSKNumbers(osk,c.l);
     } else {
-      iz.innerHTML=`<div class="iz-emoji">${c.e}</div>
+      iz.innerHTML=`${cardVisual(c,'88px',cat.color)}
         <div class="iz-word" style="color:${cat.color}">${c.w.toUpperCase()}</div>
         <div class="iz-hint">Press the first letter — or tap below</div>`;
       renderOSK(osk,c.l);
@@ -2988,7 +3151,7 @@ function renderPlayCard(){
         </div>`;
     } else {
       const choices=mkChoices(c.l,3);
-      iz.innerHTML=`<div class="iz-emoji">${c.e}</div><div class="iz-word">${c.w}</div>
+      iz.innerHTML=`${cardVisual(c,'80px',cat.color)}<div class="iz-word">${c.w}</div>
         <div class="iz-choices" id="match-ch">
           ${choices.map(ch=>`<div class="iz-choice" onclick="checkMatch('${ch}','${c.l}')" data-k="${ch}">
             <span style="font-size:24px;font-weight:900;color:${cat.color}">${ch}</span>
@@ -3027,7 +3190,7 @@ function renderPlayCard(){
       return `<div class="iz-slot${done?' done':active?' active':''}">
         ${done?spellProg[i]:(active?'_':' ')}</div>`;
     }).join('');
-    iz.innerHTML=`<div class="iz-emoji">${c.e}</div>
+    iz.innerHTML=`${cardVisual(c,'80px',cat.color)}
       <div class="iz-slots">${slots}</div>
       <div class="iz-hint">Type the letters!</div>`;
     renderOSKFull(osk);
@@ -4862,9 +5025,14 @@ function renderVlCard(){
   const grid=document.getElementById('vl-choices');
   grid.style.gridTemplateColumns='1fr 1fr';
   grid.innerHTML=choices.map(c=>{
-    // Numbers → show big bold digit; others → show emoji
+    // Numbers → digit; colors → swatch; shapes → SVG; others → emoji
+    const isColor=c.cat==='colors'||c.hex;
+    const isShape=c.cat==='shapes'||c.svg;
+    const shapeCatColor=CATS[c.cat]?.color||'#2980B9';
     const visual=isNum
       ?`<span style="font-size:72px;font-weight:900;line-height:1;color:#633806;font-family:'Nunito',sans-serif">${c.l}</span>`
+      :isShape?shapeSvg(c.svg,'64px',shapeCatColor)
+      :isColor?colorSwatch(c.hex,'64px')
       :`<span style="font-size:56px;line-height:1">${c.e}</span>`;
     // Only show word label if child can read (medium+)
     const label=(!isYoung)
