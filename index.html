@@ -736,6 +736,56 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
 .pip.pip-toward{animation:pip-toward .4s cubic-bezier(.34,1.56,.64,1)}
 .pip.pip-recoil{animation:pip-recoil .4s ease-out}
 .pip.pip-breathe,.pip-big.pip-breathe{animation:pip-breathe 2.2s ease-in-out infinite;filter:drop-shadow(0 2px 6px rgba(0,0,0,.12))}
+
+/* ══ PATH NAVIGATOR ══ */
+.path-pill{flex-shrink:0;padding:7px 14px;border-radius:20px;border:2px solid var(--border);background:var(--surface);font-size:12px;font-weight:800;cursor:pointer;transition:all .15s;white-space:nowrap;color:var(--text2)}
+.path-pill.active{border-color:var(--purple);background:var(--purple-l);color:var(--purple-d)}
+.path-pill.locked{opacity:.4;cursor:default;pointer-events:none}
+
+/* Unit block */
+.unit-block{border-radius:var(--r);border:2px solid var(--border);margin-bottom:14px;overflow:hidden}
+.unit-block.locked{opacity:.55}
+.unit-hdr{display:flex;align-items:center;gap:12px;padding:16px 18px;cursor:pointer;user-select:none}
+.unit-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.unit-title{font-size:15px;font-weight:800;flex:1}
+.unit-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px}
+.unit-chevron{font-size:14px;color:var(--text3);transition:transform .2s}
+.unit-body{padding:0 14px 14px}
+
+/* Skill row */
+.skill-row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--border)}
+.skill-row:last-child{border-bottom:none}
+.skill-icon{width:30px;height:30px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.skill-info{flex:1;min-width:0}
+.skill-name{font-size:13px;font-weight:800;color:var(--text)}
+.skill-meta{font-size:11px;color:var(--text3);font-weight:600;margin-top:1px}
+.skill-prog{display:flex;gap:3px;margin-top:5px}
+.skill-dot{width:18px;height:6px;border-radius:3px;background:var(--border)}
+.skill-dot.done{background:var(--teal)}
+.skill-dot.partial{background:var(--amber)}
+.skill-cta{font-size:11px;font-weight:800;padding:5px 12px;border-radius:20px;background:var(--purple-l);color:var(--purple-d);border:none;cursor:pointer;flex-shrink:0;transition:all .12s}
+.skill-cta:active{transform:scale(.95)}
+.skill-cta.locked{background:var(--border);color:var(--text3);cursor:default;pointer-events:none}
+.skill-cta.done{background:var(--teal-l);color:var(--teal-d)}
+
+/* Lesson detail panel */
+.lesson-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--rs);cursor:pointer;transition:background .1s;background:var(--surface)}
+.lesson-row:active{background:var(--surface2)}
+.lesson-row.locked{opacity:.45;cursor:default;pointer-events:none}
+.lesson-num{width:28px;height:28px;border-radius:50%;background:var(--purple-l);color:var(--purple-d);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.lesson-num.done{background:var(--teal-l);color:var(--teal-d)}
+.lesson-num.locked{background:var(--border);color:var(--text3)}
+.lesson-label{font-size:13px;font-weight:700;flex:1}
+.lesson-stars{font-size:12px;letter-spacing:1px}
+.act-pill{display:inline-block;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;background:var(--surface2);color:var(--text3);margin:2px}
+
+/* Checkpoint button */
+.checkpoint-btn{width:100%;padding:16px;border-radius:var(--r);background:linear-gradient(135deg,var(--amber),#f59e0b);color:#5D3A00;font-size:15px;font-weight:900;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:4px;transition:transform .12s,box-shadow .12s;box-shadow:0 4px 16px rgba(245,158,11,.3)}
+.checkpoint-btn:active{transform:scale(.97);box-shadow:0 2px 8px rgba(245,158,11,.2)}
+.checkpoint-btn.locked{opacity:.45;cursor:default;pointer-events:none;background:var(--border);color:var(--text3);box-shadow:none}
+
+@keyframes skill-unlock{0%{transform:scale(.8);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.skill-unlock-anim{animation:skill-unlock .4s cubic-bezier(.34,1.56,.64,1)}
 .lb-row{
   display:flex;align-items:center;gap:12px;
   padding:14px 16px;border-radius:16px;cursor:pointer;
@@ -1066,6 +1116,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
       <span class="chip-name" id="m-name">Player</span>
     </div>
     <div class="header-btns">
+      <button class="btn-icon" id="path-mode-btn" onclick="togglePathMode()" title="Switch to path learning" style="font-size:14px;font-weight:800">🗺️</button>
       <button class="btn-icon" onclick="go('s-players')">👥</button>
     </div>
   </div>
@@ -1130,7 +1181,54 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
   </div>
 </div>
 
+<!-- ══ PATH NAVIGATOR ══ -->
+<div class="scr" id="s-path">
+  <div class="map-header">
+    <button class="btn-icon" onclick="go('s-map')" aria-label="Back">←</button>
+    <div style="flex:1;text-align:center">
+      <div style="font-size:16px;font-weight:800" id="path-title">Pre-Primary</div>
+      <div style="font-size:11px;color:var(--text3);font-weight:600" id="path-subtitle">Path 1</div>
+    </div>
+    <button class="btn-icon" onclick="go('s-players')">👥</button>
+  </div>
+
+  <!-- Path selector pills -->
+  <div id="path-selector" style="display:flex;gap:8px;overflow-x:auto;padding:2px 0;-webkit-overflow-scrolling:touch;scrollbar-width:none"></div>
+
+  <!-- Progress bar -->
+  <div style="background:var(--border);border-radius:8px;height:8px;overflow:hidden">
+    <div id="path-prog-fill" style="height:100%;border-radius:8px;background:var(--purple);transition:width .5s cubic-bezier(.34,1.2,.64,1);width:0%"></div>
+  </div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+    <span style="font-size:11px;font-weight:700;color:var(--text3)" id="path-prog-label">0 / 0 lessons</span>
+    <span style="font-size:11px;font-weight:700;color:var(--purple)" id="path-prog-pct">0%</span>
+  </div>
+
+  <!-- Unit trail -->
+  <div id="path-trail" style="display:flex;flex-direction:column;gap:0"></div>
+</div>
+
+<!-- ══ LESSON SCREEN ══ -->
+<div class="scr" id="s-lesson">
+  <div class="map-header">
+    <button class="btn-icon" onclick="go('s-path')" aria-label="Back">←</button>
+    <div style="flex:1;text-align:center">
+      <div style="font-size:15px;font-weight:800" id="lesson-title">Lesson</div>
+      <div style="font-size:11px;color:var(--text3);font-weight:600" id="lesson-skill-label">Skill</div>
+    </div>
+    <div style="width:40px"></div>
+  </div>
+
+  <!-- Lesson activity sequence -->
+  <div id="lesson-acts" style="display:flex;flex-direction:column;gap:10px"></div>
+
+  <button class="btn btn-purple btn-full" style="font-size:16px;padding:16px;margin-top:8px" id="lesson-start-btn" onclick="beginLesson()">
+    ▶ Start lesson
+  </button>
+</div>
+
 <!-- ══ MODE SELECT ══ -->
+
 <div class="scr" id="s-modes">
   <div style="display:flex;align-items:center;gap:10px">
     <button class="btn-icon" onclick="go('s-map')" aria-label="Back to world map">←</button>
@@ -1212,6 +1310,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-
       <div class="play-cat" id="play-cat">Animals</div>
       <div class="play-cnt" id="play-cnt">1 / 26</div>
     </div>
+    <div id="lesson-act-indicator" style="display:none;font-size:10px;font-weight:800;color:var(--purple);background:var(--purple-l);padding:3px 8px;border-radius:20px;flex-shrink:0"></div>
     <div class="play-stars" id="play-stars"></div>
     <div class="hearts-row" id="play-hearts">❤️❤️❤️</div>
   </div>
@@ -1690,7 +1789,297 @@ const WORLDS = [
     cats:['space','ocean']},
   {id:'w9',label:'Directions',color:'#00695C',bg:'#E0F2F1',icon:'🧭',
     cats:['directions','positions']}
+
 ];
+
+// ════════════════════════════════════════════════════════
+//  CURRICULUM: PATH → UNIT → SKILL → LESSON → ACTIVITY
+// ════════════════════════════════════════════════════════
+
+const PATHS={
+  p1:{id:'p1',label:'Pre-Primary',ageMin:1,ageMax:5,icon:'🌱',color:'#27AE60',bg:'#EAF3DE',
+      units:['u1_1','u1_2','u1_3','u1_4','u1_5','u1_6'],checkpoint:'cp1'},
+  p2:{id:'p2',label:'Class 1–2',  ageMin:5,ageMax:7, icon:'🎯',color:'#2980B9',bg:'#D6EAF8',
+      units:['u2_1','u2_2','u2_3'],                   checkpoint:'cp2'},
+  p3:{id:'p3',label:'Class 3',    ageMin:7,ageMax:8,  icon:'🔥',color:'#E67E22',bg:'#FEF9E7',
+      units:['u3_1','u3_2'],                           checkpoint:'cp3'},
+  p4:{id:'p4',label:'Class 4',    ageMin:8,ageMax:9,  icon:'🔴',color:'#E74C3C',bg:'#FDEDEC',
+      units:['u4_1','u4_2'],                           checkpoint:'cp4'},
+  p5:{id:'p5',label:'Class 5',    ageMin:9,ageMax:10, icon:'⚡',color:'#8E44AD',bg:'#F5EEF8',
+      units:['u5_1','u5_2'],                           checkpoint:'cp5'},
+};
+
+const CHECKPOINTS={
+  cp1:{id:'cp1',pathId:'p1',label:'End of Pre-Primary',minScore:70,
+       activities:[{gameType:'listen',catKey:'alphabet_words',count:5},{gameType:'match',catKey:'numbers',count:5},
+                   {gameType:'match',catKey:'colors',count:5},{gameType:'match',catKey:'animals',count:5}]},
+  cp2:{id:'cp2',pathId:'p2',label:'Class 1–2 Checkpoint',minScore:70,
+       activities:[{gameType:'match',catKey:'numbers',count:6},{gameType:'spell',catKey:'food',count:4},
+                   {gameType:'match',catKey:'actions',count:5}]},
+  cp3:{id:'cp3',pathId:'p3',label:'Class 3 Checkpoint',minScore:70,
+       activities:[{gameType:'timer',catKey:'numbers',count:8},{gameType:'match',catKey:'objects',count:6}]},
+  cp4:{id:'cp4',pathId:'p4',label:'Class 4 Checkpoint',minScore:70,
+       activities:[{gameType:'timer',catKey:'numbers',count:10},{gameType:'spell',catKey:'places',count:5}]},
+  cp5:{id:'cp5',pathId:'p5',label:'Final Boss',minScore:70,
+       activities:[{gameType:'timer',catKey:'numbers',count:10},{gameType:'spell',catKey:'actions',count:6},
+                   {gameType:'match',catKey:'objects',count:6}]},
+};
+
+const UNITS={
+  u1_1:{id:'u1_1',pathId:'p1',label:'Sounds & First Words',icon:'🔤',color:'#27AE60',
+        unlock:{type:'path_start'},skills:['s1_1_1','s1_1_2','s1_1_3']},
+  u1_2:{id:'u1_2',pathId:'p1',label:'Numbers & Counting',  icon:'🔢',color:'#E67E22',
+        unlock:{type:'complete_unit',unitId:'u1_1'},skills:['s1_2_1','s1_2_2','s1_2_3']},
+  u1_3:{id:'u1_3',pathId:'p1',label:'Colors & Shapes',     icon:'🎨',color:'#E84393',
+        unlock:{type:'complete_unit',unitId:'u1_2'},skills:['s1_3_1','s1_3_2','s1_3_3']},
+  u1_4:{id:'u1_4',pathId:'p1',label:'My World',            icon:'🌍',color:'#2980B9',
+        unlock:{type:'complete_unit',unitId:'u1_3'},skills:['s1_4_1','s1_4_2','s1_4_3']},
+  u1_5:{id:'u1_5',pathId:'p1',label:'Actions & Emotions',  icon:'💛',color:'#F06292',
+        unlock:{type:'complete_unit',unitId:'u1_4'},skills:['s1_5_1','s1_5_2']},
+  u1_6:{id:'u1_6',pathId:'p1',label:'Early Words',         icon:'📝',color:'#8E44AD',
+        unlock:{type:'complete_unit',unitId:'u1_5'},skills:['s1_6_1','s1_6_2']},
+  u2_1:{id:'u2_1',pathId:'p2',label:'Numbers Basics',      icon:'🔢',color:'#2980B9',
+        unlock:{type:'path_start'},skills:['s2_1_1','s2_1_2','s2_1_3']},
+  u2_2:{id:'u2_2',pathId:'p2',label:'Subtraction & Logic', icon:'➖',color:'#2980B9',
+        unlock:{type:'complete_unit',unitId:'u2_1'},skills:['s2_2_1','s2_2_2','s2_2_3']},
+  u2_3:{id:'u2_3',pathId:'p2',label:'Language Basics',     icon:'🗣️',color:'#5C6BC0',
+        unlock:{type:'complete_unit',unitId:'u2_2'},skills:['s2_3_1','s2_3_2','s2_3_3']},
+  u3_1:{id:'u3_1',pathId:'p3',label:'Multiplication',      icon:'✖️',color:'#E67E22',
+        unlock:{type:'path_start'},skills:['s3_1_1','s3_1_2','s3_1_3']},
+  u3_2:{id:'u3_2',pathId:'p3',label:'Division',            icon:'➗',color:'#E67E22',
+        unlock:{type:'complete_unit',unitId:'u3_1'},skills:['s3_2_1','s3_2_2']},
+  u4_1:{id:'u4_1',pathId:'p4',label:'Fractions',           icon:'½', color:'#E74C3C',
+        unlock:{type:'path_start'},skills:['s4_1_1','s4_1_2','s4_1_3']},
+  u4_2:{id:'u4_2',pathId:'p4',label:'Advanced Operations', icon:'🔢',color:'#E74C3C',
+        unlock:{type:'complete_unit',unitId:'u4_1'},skills:['s4_2_1','s4_2_2']},
+  u5_1:{id:'u5_1',pathId:'p5',label:'Decimals',            icon:'.0',color:'#8E44AD',
+        unlock:{type:'path_start'},skills:['s5_1_1','s5_1_2']},
+  u5_2:{id:'u5_2',pathId:'p5',label:'Real-world Math',     icon:'💰',color:'#8E44AD',
+        unlock:{type:'complete_unit',unitId:'u5_1'},skills:['s5_2_1','s5_2_2','s5_2_3']},
+};
+
+const SKILLS={
+  s1_1_1:{id:'s1_1_1',unitId:'u1_1',label:'Sound recognition',icon:'👂',unlock:{type:'unit_start'},
+          lessons:['l1_1_1_1','l1_1_1_2','l1_1_1_3','l1_1_1_4']},
+  s1_1_2:{id:'s1_1_2',unitId:'u1_1',label:'Object naming',    icon:'🍎',unlock:{type:'complete_skill',skillId:'s1_1_1'},
+          lessons:['l1_1_2_1','l1_1_2_2','l1_1_2_3','l1_1_2_4']},
+  s1_1_3:{id:'s1_1_3',unitId:'u1_1',label:'First letters',    icon:'🔤',unlock:{type:'complete_skill',skillId:'s1_1_2'},
+          lessons:['l1_1_3_1','l1_1_3_2','l1_1_3_3','l1_1_3_4']},
+  s1_2_1:{id:'s1_2_1',unitId:'u1_2',label:'Numbers 1–10',     icon:'🔢',unlock:{type:'unit_start'},
+          lessons:['l1_2_1_1','l1_2_1_2','l1_2_1_3','l1_2_1_4']},
+  s1_2_2:{id:'s1_2_2',unitId:'u1_2',label:'Numbers 11–20',    icon:'🔢',unlock:{type:'complete_skill',skillId:'s1_2_1'},
+          lessons:['l1_2_2_1','l1_2_2_2','l1_2_2_3','l1_2_2_4']},
+  s1_2_3:{id:'s1_2_3',unitId:'u1_2',label:'Counting objects', icon:'🧮',unlock:{type:'complete_skill',skillId:'s1_2_2'},
+          lessons:['l1_2_3_1','l1_2_3_2','l1_2_3_3','l1_2_3_4']},
+  s1_3_1:{id:'s1_3_1',unitId:'u1_3',label:'Colors',           icon:'🎨',unlock:{type:'unit_start'},
+          lessons:['l1_3_1_1','l1_3_1_2','l1_3_1_3']},
+  s1_3_2:{id:'s1_3_2',unitId:'u1_3',label:'Shapes',           icon:'🔷',unlock:{type:'complete_skill',skillId:'s1_3_1'},
+          lessons:['l1_3_2_1','l1_3_2_2','l1_3_2_3']},
+  s1_3_3:{id:'s1_3_3',unitId:'u1_3',label:'Patterns',         icon:'🔄',unlock:{type:'complete_skill',skillId:'s1_3_2'},
+          lessons:['l1_3_3_1','l1_3_3_2','l1_3_3_3']},
+  s1_4_1:{id:'s1_4_1',unitId:'u1_4',label:'Family',           icon:'👨‍👩‍👧',unlock:{type:'unit_start'},
+          lessons:['l1_4_1_1','l1_4_1_2','l1_4_1_3']},
+  s1_4_2:{id:'s1_4_2',unitId:'u1_4',label:'Animals',          icon:'🐾',unlock:{type:'complete_skill',skillId:'s1_4_1'},
+          lessons:['l1_4_2_1','l1_4_2_2','l1_4_2_3']},
+  s1_4_3:{id:'s1_4_3',unitId:'u1_4',label:'Food',             icon:'🍎',unlock:{type:'complete_skill',skillId:'s1_4_2'},
+          lessons:['l1_4_3_1','l1_4_3_2','l1_4_3_3']},
+  s1_5_1:{id:'s1_5_1',unitId:'u1_5',label:'Actions',          icon:'🏃',unlock:{type:'unit_start'},
+          lessons:['l1_5_1_1','l1_5_1_2','l1_5_1_3']},
+  s1_5_2:{id:'s1_5_2',unitId:'u1_5',label:'Emotions',         icon:'😊',unlock:{type:'complete_skill',skillId:'s1_5_1'},
+          lessons:['l1_5_2_1','l1_5_2_2','l1_5_2_3']},
+  s1_6_1:{id:'s1_6_1',unitId:'u1_6',label:'Opposites',        icon:'↔️',unlock:{type:'unit_start'},
+          lessons:['l1_6_1_1','l1_6_1_2','l1_6_1_3']},
+  s1_6_2:{id:'s1_6_2',unitId:'u1_6',label:'Greetings',        icon:'👋',unlock:{type:'complete_skill',skillId:'s1_6_1'},
+          lessons:['l1_6_2_1','l1_6_2_2','l1_6_2_3']},
+  s2_1_1:{id:'s2_1_1',unitId:'u2_1',label:'Numbers 1–100',    icon:'💯',unlock:{type:'unit_start'},
+          lessons:['l2_1_1_1','l2_1_1_2','l2_1_1_3','l2_1_1_4']},
+  s2_1_2:{id:'s2_1_2',unitId:'u2_1',label:'Place value',      icon:'📊',unlock:{type:'complete_skill',skillId:'s2_1_1'},
+          lessons:['l2_1_2_1','l2_1_2_2','l2_1_2_3']},
+  s2_1_3:{id:'s2_1_3',unitId:'u2_1',label:'Addition',         icon:'➕',unlock:{type:'complete_skill',skillId:'s2_1_2'},
+          lessons:['l2_1_3_1','l2_1_3_2','l2_1_3_3','l2_1_3_4']},
+  s2_2_1:{id:'s2_2_1',unitId:'u2_2',label:'Subtraction',      icon:'➖',unlock:{type:'unit_start'},
+          lessons:['l2_2_1_1','l2_2_1_2','l2_2_1_3']},
+  s2_2_2:{id:'s2_2_2',unitId:'u2_2',label:'Patterns',         icon:'🔄',unlock:{type:'complete_skill',skillId:'s2_2_1'},
+          lessons:['l2_2_2_1','l2_2_2_2']},
+  s2_2_3:{id:'s2_2_3',unitId:'u2_2',label:'Sequences',        icon:'📈',unlock:{type:'complete_skill',skillId:'s2_2_2'},
+          lessons:['l2_2_3_1','l2_2_3_2']},
+  s2_3_1:{id:'s2_3_1',unitId:'u2_3',label:'Words',            icon:'📝',unlock:{type:'unit_start'},
+          lessons:['l2_3_1_1','l2_3_1_2','l2_3_1_3']},
+  s2_3_2:{id:'s2_3_2',unitId:'u2_3',label:'Sentences',        icon:'📖',unlock:{type:'complete_skill',skillId:'s2_3_1'},
+          lessons:['l2_3_2_1','l2_3_2_2','l2_3_2_3']},
+  s2_3_3:{id:'s2_3_3',unitId:'u2_3',label:'Grammar',          icon:'✏️',unlock:{type:'complete_skill',skillId:'s2_3_2'},
+          lessons:['l2_3_3_1','l2_3_3_2']},
+  s3_1_1:{id:'s3_1_1',unitId:'u3_1',label:'Times tables',     icon:'✖️',unlock:{type:'unit_start'},
+          lessons:['l3_1_1_1','l3_1_1_2','l3_1_1_3']},
+  s3_1_2:{id:'s3_1_2',unitId:'u3_1',label:'Multiply',         icon:'✖️',unlock:{type:'complete_skill',skillId:'s3_1_1'},
+          lessons:['l3_1_2_1','l3_1_2_2','l3_1_2_3']},
+  s3_1_3:{id:'s3_1_3',unitId:'u3_1',label:'Apply multiplication',icon:'🧩',unlock:{type:'complete_skill',skillId:'s3_1_2'},
+          lessons:['l3_1_3_1','l3_1_3_2']},
+  s3_2_1:{id:'s3_2_1',unitId:'u3_2',label:'Division basics',  icon:'➗',unlock:{type:'unit_start'},
+          lessons:['l3_2_1_1','l3_2_1_2','l3_2_1_3']},
+  s3_2_2:{id:'s3_2_2',unitId:'u3_2',label:'Remainders',       icon:'📐',unlock:{type:'complete_skill',skillId:'s3_2_1'},
+          lessons:['l3_2_2_1','l3_2_2_2']},
+  s4_1_1:{id:'s4_1_1',unitId:'u4_1',label:'Identify fractions',icon:'½', unlock:{type:'unit_start'},
+          lessons:['l4_1_1_1','l4_1_1_2','l4_1_1_3']},
+  s4_1_2:{id:'s4_1_2',unitId:'u4_1',label:'Compare fractions',icon:'½', unlock:{type:'complete_skill',skillId:'s4_1_1'},
+          lessons:['l4_1_2_1','l4_1_2_2']},
+  s4_1_3:{id:'s4_1_3',unitId:'u4_1',label:'Apply fractions',  icon:'🧩',unlock:{type:'complete_skill',skillId:'s4_1_2'},
+          lessons:['l4_1_3_1','l4_1_3_2']},
+  s4_2_1:{id:'s4_2_1',unitId:'u4_2',label:'Multi-digit math', icon:'🔢',unlock:{type:'unit_start'},
+          lessons:['l4_2_1_1','l4_2_1_2','l4_2_1_3']},
+  s4_2_2:{id:'s4_2_2',unitId:'u4_2',label:'Error detection',  icon:'🔍',unlock:{type:'complete_skill',skillId:'s4_2_1'},
+          lessons:['l4_2_2_1','l4_2_2_2']},
+  s5_1_1:{id:'s5_1_1',unitId:'u5_1',label:'Decimal basics',   icon:'.0',unlock:{type:'unit_start'},
+          lessons:['l5_1_1_1','l5_1_1_2','l5_1_1_3']},
+  s5_1_2:{id:'s5_1_2',unitId:'u5_1',label:'Decimal operations',icon:'🔢',unlock:{type:'complete_skill',skillId:'s5_1_1'},
+          lessons:['l5_1_2_1','l5_1_2_2','l5_1_2_3']},
+  s5_2_1:{id:'s5_2_1',unitId:'u5_2',label:'Money',            icon:'💰',unlock:{type:'unit_start'},
+          lessons:['l5_2_1_1','l5_2_1_2']},
+  s5_2_2:{id:'s5_2_2',unitId:'u5_2',label:'Time',             icon:'🕐',unlock:{type:'complete_skill',skillId:'s5_2_1'},
+          lessons:['l5_2_2_1','l5_2_2_2']},
+  s5_2_3:{id:'s5_2_3',unitId:'u5_2',label:'Data & graphs',    icon:'📊',unlock:{type:'complete_skill',skillId:'s5_2_2'},
+          lessons:['l5_2_3_1','l5_2_3_2']},
+};
+
+// Lesson builder helpers
+function _mkL(id,skillId,label,activities,unlock){
+  return{id,skillId,label,unlock:unlock||{type:'skill_start'},
+    activities:activities.map((a,i)=>({...a,seq:i+1}))};
+}
+function _acts(catKey,types){return types.map(gt=>({gameType:gt,catKey}));}
+
+const LESSONS={
+  // ── s1_1_1 Sound recognition ──
+  l1_1_1_1:_mkL('l1_1_1_1','s1_1_1','Hear & tap animals',    _acts('animals',['flashcard','listen','match','listen','flashcard'])),
+  l1_1_1_2:_mkL('l1_1_1_2','s1_1_1','Hear & tap A–Z',        _acts('alphabet_words',['flashcard','listen','match','listen','flashcard']),{type:'complete_lesson',lessonId:'l1_1_1_1'}),
+  l1_1_1_3:_mkL('l1_1_1_3','s1_1_1','Hear & tap food',        _acts('food',['flashcard','listen','match','listen','flashcard']),{type:'complete_lesson',lessonId:'l1_1_1_2'}),
+  l1_1_1_4:_mkL('l1_1_1_4','s1_1_1','Hear & tap body',        _acts('body',['flashcard','listen','match','listen','timer']),{type:'complete_lesson',lessonId:'l1_1_1_3'}),
+  // ── s1_1_2 Object naming ──
+  l1_1_2_1:_mkL('l1_1_2_1','s1_1_2','Name the animal',        _acts('animals',['flashcard','match','match','reverse','timer'])),
+  l1_1_2_2:_mkL('l1_1_2_2','s1_1_2','Name the food',          _acts('food',['flashcard','match','match','reverse','timer']),{type:'complete_lesson',lessonId:'l1_1_2_1'}),
+  l1_1_2_3:_mkL('l1_1_2_3','s1_1_2','Name body parts',        _acts('body',['flashcard','match','reverse','reverse','timer']),{type:'complete_lesson',lessonId:'l1_1_2_2'}),
+  l1_1_2_4:_mkL('l1_1_2_4','s1_1_2','Name A–Z objects',       _acts('alphabet_words',['flashcard','match','reverse','listen','timer']),{type:'complete_lesson',lessonId:'l1_1_2_3'}),
+  // ── s1_1_3 First letters ──
+  l1_1_3_1:_mkL('l1_1_3_1','s1_1_3','First letter: animals',  _acts('animals',['flashcard','first-letter','first-letter','match','timer'])),
+  l1_1_3_2:_mkL('l1_1_3_2','s1_1_3','First letter: food',     _acts('food',['flashcard','first-letter','first-letter','match','timer']),{type:'complete_lesson',lessonId:'l1_1_3_1'}),
+  l1_1_3_3:_mkL('l1_1_3_3','s1_1_3','First letter: A–Z',      _acts('alphabet_words',['flashcard','first-letter','first-letter','arrow','timer']),{type:'complete_lesson',lessonId:'l1_1_3_2'}),
+  l1_1_3_4:_mkL('l1_1_3_4','s1_1_3','First letter: body',     _acts('body',['flashcard','first-letter','first-letter','arrow','timer']),{type:'complete_lesson',lessonId:'l1_1_3_3'}),
+  // ── s1_2_1 Numbers 1–10 ──
+  l1_2_1_1:_mkL('l1_2_1_1','s1_2_1','Meet 1–5',               _acts('numbers',['flashcard','match','match','reverse','timer'])),
+  l1_2_1_2:_mkL('l1_2_1_2','s1_2_1','Count 1–5',              _acts('numbers',['flashcard','match','reverse','first-letter','timer']),{type:'complete_lesson',lessonId:'l1_2_1_1'}),
+  l1_2_1_3:_mkL('l1_2_1_3','s1_2_1','Meet 6–10',              _acts('numbers',['flashcard','match','match','reverse','timer']),{type:'complete_lesson',lessonId:'l1_2_1_2'}),
+  l1_2_1_4:_mkL('l1_2_1_4','s1_2_1','Count 1–10 mixed',       _acts('numbers',['flashcard','match','reverse','listen','timer']),{type:'complete_lesson',lessonId:'l1_2_1_3'}),
+  // ── s1_2_2 Numbers 11–20 ──
+  l1_2_2_1:_mkL('l1_2_2_1','s1_2_2','Meet 11–15',             _acts('numbers',['flashcard','match','match','reverse','timer'])),
+  l1_2_2_2:_mkL('l1_2_2_2','s1_2_2','Meet 16–20',             _acts('numbers',['flashcard','match','reverse','reverse','timer']),{type:'complete_lesson',lessonId:'l1_2_2_1'}),
+  l1_2_2_3:_mkL('l1_2_2_3','s1_2_2','Spell 11–15',            _acts('numbers',['flashcard','match','spell','spell','timer']),{type:'complete_lesson',lessonId:'l1_2_2_2'}),
+  l1_2_2_4:_mkL('l1_2_2_4','s1_2_2','Spell 16–20',            _acts('numbers',['flashcard','spell','spell','reverse','timer']),{type:'complete_lesson',lessonId:'l1_2_2_3'}),
+  // ── s1_2_3 Counting objects ──
+  l1_2_3_1:_mkL('l1_2_3_1','s1_2_3','Count animals',          _acts('numbers',['flashcard','match','match','reverse','timer'])),
+  l1_2_3_2:_mkL('l1_2_3_2','s1_2_3','Count food',             _acts('numbers',['flashcard','match','reverse','match','timer']),{type:'complete_lesson',lessonId:'l1_2_3_1'}),
+  l1_2_3_3:_mkL('l1_2_3_3','s1_2_3','Count & listen',         _acts('numbers',['flashcard','listen','match','reverse','timer']),{type:'complete_lesson',lessonId:'l1_2_3_2'}),
+  l1_2_3_4:_mkL('l1_2_3_4','s1_2_3','Count challenge',        _acts('numbers',['match','reverse','listen','listen','timer']),{type:'complete_lesson',lessonId:'l1_2_3_3'}),
+  // ── s1_3_1 Colors ──
+  l1_3_1_1:_mkL('l1_3_1_1','s1_3_1','Primary colors',         _acts('colors',['flashcard','match','match','reverse','timer'])),
+  l1_3_1_2:_mkL('l1_3_1_2','s1_3_1','Secondary colors',       _acts('colors',['flashcard','match','reverse','listen','timer']),{type:'complete_lesson',lessonId:'l1_3_1_1'}),
+  l1_3_1_3:_mkL('l1_3_1_3','s1_3_1','Color challenge',        _acts('colors',['match','reverse','listen','first-letter','timer']),{type:'complete_lesson',lessonId:'l1_3_1_2'}),
+  // ── s1_3_2 Shapes ──
+  l1_3_2_1:_mkL('l1_3_2_1','s1_3_2','Basic shapes',           _acts('shapes',['flashcard','match','match','reverse','timer'])),
+  l1_3_2_2:_mkL('l1_3_2_2','s1_3_2','Shape names',            _acts('shapes',['flashcard','match','first-letter','reverse','timer']),{type:'complete_lesson',lessonId:'l1_3_2_1'}),
+  l1_3_2_3:_mkL('l1_3_2_3','s1_3_2','Shape challenge',        _acts('shapes',['match','reverse','listen','first-letter','timer']),{type:'complete_lesson',lessonId:'l1_3_2_2'}),
+  // ── s1_3_3 Patterns ──
+  l1_3_3_1:_mkL('l1_3_3_1','s1_3_3','Color patterns',         _acts('colors',['flashcard','match','match','reverse','timer'])),
+  l1_3_3_2:_mkL('l1_3_3_2','s1_3_3','Shape patterns',         _acts('shapes',['flashcard','match','match','reverse','timer']),{type:'complete_lesson',lessonId:'l1_3_3_1'}),
+  l1_3_3_3:_mkL('l1_3_3_3','s1_3_3','Mixed patterns',         _acts('colors',['match','reverse','listen','listen','timer']),{type:'complete_lesson',lessonId:'l1_3_3_2'}),
+  // ── s1_4_1 Family ──
+  l1_4_1_1:_mkL('l1_4_1_1','s1_4_1','Meet the family',        _acts('family',['flashcard','match','listen','reverse','timer'])),
+  l1_4_1_2:_mkL('l1_4_1_2','s1_4_1','Name family members',    _acts('family',['flashcard','match','reverse','first-letter','timer']),{type:'complete_lesson',lessonId:'l1_4_1_1'}),
+  l1_4_1_3:_mkL('l1_4_1_3','s1_4_1','Family challenge',       _acts('family',['match','reverse','listen','first-letter','timer']),{type:'complete_lesson',lessonId:'l1_4_1_2'}),
+  // ── s1_4_2 Animals ──
+  l1_4_2_1:_mkL('l1_4_2_1','s1_4_2','Common animals',         _acts('animals',['flashcard','match','listen','reverse','timer'])),
+  l1_4_2_2:_mkL('l1_4_2_2','s1_4_2','Name animals',           _acts('animals',['flashcard','match','reverse','first-letter','timer']),{type:'complete_lesson',lessonId:'l1_4_2_1'}),
+  l1_4_2_3:_mkL('l1_4_2_3','s1_4_2','Animal challenge',       _acts('animals',['match','reverse','listen','sayit','timer']),{type:'complete_lesson',lessonId:'l1_4_2_2'}),
+  // ── s1_4_3 Food ──
+  l1_4_3_1:_mkL('l1_4_3_1','s1_4_3','Common food',            _acts('food',['flashcard','match','listen','reverse','timer'])),
+  l1_4_3_2:_mkL('l1_4_3_2','s1_4_3','Name the food',          _acts('food',['flashcard','match','reverse','first-letter','timer']),{type:'complete_lesson',lessonId:'l1_4_3_1'}),
+  l1_4_3_3:_mkL('l1_4_3_3','s1_4_3','Food challenge',         _acts('food',['match','reverse','listen','sayit','timer']),{type:'complete_lesson',lessonId:'l1_4_3_2'}),
+  // ── s1_5_1 Actions ──
+  l1_5_1_1:_mkL('l1_5_1_1','s1_5_1','Action words',           _acts('actions',['flashcard','match','listen','reverse','timer'])),
+  l1_5_1_2:_mkL('l1_5_1_2','s1_5_1','Spell actions',          _acts('actions',['flashcard','match','first-letter','spell','timer']),{type:'complete_lesson',lessonId:'l1_5_1_1'}),
+  l1_5_1_3:_mkL('l1_5_1_3','s1_5_1','Action challenge',       _acts('actions',['match','reverse','listen','sayit','timer']),{type:'complete_lesson',lessonId:'l1_5_1_2'}),
+  // ── s1_5_2 Emotions ──
+  l1_5_2_1:_mkL('l1_5_2_1','s1_5_2','Basic feelings',         _acts('emotions',['flashcard','match','listen','reverse','timer'])),
+  l1_5_2_2:_mkL('l1_5_2_2','s1_5_2','Name emotions',          _acts('emotions',['flashcard','match','reverse','first-letter','timer']),{type:'complete_lesson',lessonId:'l1_5_2_1'}),
+  l1_5_2_3:_mkL('l1_5_2_3','s1_5_2','Emotion challenge',      _acts('emotions',['match','reverse','listen','sayit','timer']),{type:'complete_lesson',lessonId:'l1_5_2_2'}),
+  // ── s1_6_1 Opposites ──
+  l1_6_1_1:_mkL('l1_6_1_1','s1_6_1','Meet opposites',         _acts('opposites',['flashcard','match','match','reverse','timer'])),
+  l1_6_1_2:_mkL('l1_6_1_2','s1_6_1','Spell opposites',        _acts('opposites',['flashcard','match','spell','reverse','timer']),{type:'complete_lesson',lessonId:'l1_6_1_1'}),
+  l1_6_1_3:_mkL('l1_6_1_3','s1_6_1','Opposites challenge',    _acts('opposites',['match','reverse','listen','sayit','timer']),{type:'complete_lesson',lessonId:'l1_6_1_2'}),
+  // ── s1_6_2 Greetings ──
+  l1_6_2_1:_mkL('l1_6_2_1','s1_6_2','Basic greetings',        _acts('greetings',['flashcard','match','listen','reverse','timer'])),
+  l1_6_2_2:_mkL('l1_6_2_2','s1_6_2','Say greetings',          _acts('greetings',['flashcard','listen','sayit','reverse','timer']),{type:'complete_lesson',lessonId:'l1_6_2_1'}),
+  l1_6_2_3:_mkL('l1_6_2_3','s1_6_2','Greetings challenge',    _acts('greetings',['match','listen','sayit','reverse','timer']),{type:'complete_lesson',lessonId:'l1_6_2_2'}),
+  // ── PATH 2 (stubs — game logic added Phase 3) ──
+  l2_1_1_1:_mkL('l2_1_1_1','s2_1_1','Numbers 1–50',           _acts('numbers',['flashcard','match','reverse','first-letter','timer'])),
+  l2_1_1_2:_mkL('l2_1_1_2','s2_1_1','Numbers 51–100',         _acts('numbers',['flashcard','match','reverse','spell','timer']),{type:'complete_lesson',lessonId:'l2_1_1_1'}),
+  l2_1_1_3:_mkL('l2_1_1_3','s2_1_1','Spell numbers',          _acts('numbers',['flashcard','spell','spell','reverse','timer']),{type:'complete_lesson',lessonId:'l2_1_1_2'}),
+  l2_1_1_4:_mkL('l2_1_1_4','s2_1_1','Number challenge',       _acts('numbers',['match','reverse','listen','spell','timer']),{type:'complete_lesson',lessonId:'l2_1_1_3'}),
+  l2_1_2_1:_mkL('l2_1_2_1','s2_1_2','Tens & units',           _acts('numbers',['flashcard','match','match','reverse','timer'])),
+  l2_1_2_2:_mkL('l2_1_2_2','s2_1_2','Build numbers',          _acts('numbers',['match','reverse','match','timer','timer']),{type:'complete_lesson',lessonId:'l2_1_2_1'}),
+  l2_1_2_3:_mkL('l2_1_2_3','s2_1_2','Place value challenge',  _acts('numbers',['reverse','timer','match','timer','timer']),{type:'complete_lesson',lessonId:'l2_1_2_2'}),
+  l2_1_3_1:_mkL('l2_1_3_1','s2_1_3','Add within 10',
+    [{gameType:'flashcard',catKey:'numbers'},{gameType:'match',catKey:'numbers'},
+     {gameType:'addition_tap',catKey:'numbers',config:{max:10}},{gameType:'addition_tap',catKey:'numbers',config:{max:10}},
+     {gameType:'timer',catKey:'numbers',seq:5}]),
+  l2_1_3_2:_mkL('l2_1_3_2','s2_1_3','Add within 20',
+    [{gameType:'match',catKey:'numbers'},{gameType:'addition_tap',catKey:'numbers',config:{max:20}},
+     {gameType:'addition_tap',catKey:'numbers',config:{max:20}},{gameType:'compare',catKey:'numbers',config:{max:20}},
+     {gameType:'timer',catKey:'numbers',seq:5}],{type:'complete_lesson',lessonId:'l2_1_3_1'}),
+  l2_1_3_3:_mkL('l2_1_3_3','s2_1_3','Missing addend',
+    [{gameType:'match',catKey:'numbers'},{gameType:'missing_number',catKey:'numbers',config:{max:20}},
+     {gameType:'addition_tap',catKey:'numbers',config:{max:20}},{gameType:'compare',catKey:'numbers',config:{max:20}},
+     {gameType:'timer',catKey:'numbers',seq:5}],{type:'complete_lesson',lessonId:'l2_1_3_2'}),
+  l2_1_3_4:_mkL('l2_1_3_4','s2_1_3','Addition challenge',
+    [{gameType:'addition_tap',catKey:'numbers',config:{max:20}},{gameType:'compare',catKey:'numbers',config:{max:20}},
+     {gameType:'missing_number',catKey:'numbers',config:{max:20}},{gameType:'addition_tap',catKey:'numbers',config:{max:20}},
+     {gameType:'timer',catKey:'numbers',seq:5}],{type:'complete_lesson',lessonId:'l2_1_3_3'}),
+  l2_3_1_1:_mkL('l2_3_1_1','s2_3_1','Spell common words',     _acts('food',['flashcard','match','spell','spell','timer'])),
+  l2_3_1_2:_mkL('l2_3_1_2','s2_3_1','Spell action words',     _acts('actions',['flashcard','match','spell','spell','timer']),{type:'complete_lesson',lessonId:'l2_3_1_1'}),
+  l2_3_1_3:_mkL('l2_3_1_3','s2_3_1','Spell challenge',        _acts('objects',['match','spell','spell','reverse','timer']),{type:'complete_lesson',lessonId:'l2_3_1_2'}),
+  l2_3_2_1:_mkL('l2_3_2_1','s2_3_2','Simple sentences',
+    [{gameType:'flashcard',catKey:'actions'},{gameType:'match',catKey:'actions'},
+     {gameType:'sentence_builder',catKey:'actions'},{gameType:'fill_blank',catKey:'actions'},
+     {gameType:'timer',catKey:'actions',seq:5}]),
+  l2_3_2_2:_mkL('l2_3_2_2','s2_3_2','Build sentences',
+    [{gameType:'match',catKey:'actions'},{gameType:'sentence_builder',catKey:'actions'},
+     {gameType:'fill_blank',catKey:'food'},{gameType:'sentence_builder',catKey:'food'},
+     {gameType:'timer',catKey:'actions',seq:5}],{type:'complete_lesson',lessonId:'l2_3_2_1'}),
+  l2_3_2_3:_mkL('l2_3_2_3','s2_3_2','Sentence challenge',
+    [{gameType:'sentence_builder',catKey:'actions'},{gameType:'fill_blank',catKey:'actions'},
+     {gameType:'true_false',catKey:'animals'},{gameType:'odd_one_out',catKey:'food'},
+     {gameType:'timer',catKey:'actions',seq:5}],{type:'complete_lesson',lessonId:'l2_3_2_2'}),
+  l2_3_3_1:_mkL('l2_3_3_1','s2_3_3','True or false',
+    [{gameType:'flashcard',catKey:'animals'},{gameType:'true_false',catKey:'animals'},
+     {gameType:'true_false',catKey:'food'},{gameType:'odd_one_out',catKey:'animals'},
+     {gameType:'timer',catKey:'animals',seq:5}]),
+  l2_3_3_2:_mkL('l2_3_3_2','s2_3_3','Odd one out',
+    [{gameType:'odd_one_out',catKey:'animals'},{gameType:'odd_one_out',catKey:'food'},
+     {gameType:'true_false',catKey:'actions'},{gameType:'fill_blank',catKey:'actions'},
+     {gameType:'timer',catKey:'actions',seq:5}],{type:'complete_lesson',lessonId:'l2_3_3_1'}),
+  l3_1_1_1:_mkL('l3_1_1_1','s3_1_1','2× table',
+    [{gameType:'flashcard',catKey:'numbers'},{gameType:'match',catKey:'numbers'},
+     {gameType:'multiply_tap',catKey:'numbers',config:{table:2}},{gameType:'multiply_tap',catKey:'numbers',config:{table:2}},
+     {gameType:'timer',catKey:'numbers',seq:5}]),
+  l3_1_1_2:_mkL('l3_1_1_2','s3_1_1','5× table',
+    [{gameType:'multiply_tap',catKey:'numbers',config:{table:5}},{gameType:'match',catKey:'numbers'},
+     {gameType:'multiply_tap',catKey:'numbers',config:{table:5}},{gameType:'compare',catKey:'numbers'},
+     {gameType:'timer',catKey:'numbers',seq:5}],{type:'complete_lesson',lessonId:'l3_1_1_1'}),
+  l3_1_1_3:_mkL('l3_1_1_3','s3_1_1','10× table',
+    [{gameType:'multiply_tap',catKey:'numbers',config:{table:10}},{gameType:'multiply_tap',catKey:'numbers',config:{table:10}},
+     {gameType:'compare',catKey:'numbers'},{gameType:'missing_number',catKey:'numbers'},
+     {gameType:'timer',catKey:'numbers',seq:5}],{type:'complete_lesson',lessonId:'l3_1_1_2'}),
+};
+
 
 const CATS = {
   // ── WORLD 1: First steps ──────────────────────────────
@@ -2202,6 +2591,13 @@ function migrateStore(){
         localStorage.removeItem(key);
       }
     });
+    // Backfill Phase 1 progression fields
+    if(!p.lessonProgress)p.lessonProgress={};
+    if(!p.skillProgress) p.skillProgress={};
+    if(!p.unitProgress)  p.unitProgress={};
+    if(!p.pathProgress)  p.pathProgress={};
+    if(!p.currentLesson) p.currentLesson=null;
+    if(p.activePath===undefined)p.activePath=null;
   });
 }
 function saveStore(){
@@ -2231,7 +2627,15 @@ function mkPlayer(name,av,dob,gender,favColor,favNum){
     totalSessions:0,stars:0,cardStatus:{},lastSeenDate:{},
     xp:0,level:1,dailyLessons:0,dailyDate:'',
     lastPlayedCat:null,lastPlayedMode:null,
-    wrongCount:{}};
+    wrongCount:{},
+    // Phase 1: path/lesson progression
+    activePath:null,         // 'p1'|'p2'|...|null (null = legacy world mode)
+    lessonProgress:{},       // lessonId → {attempts,bestScore,stars,completed,unlockedAt}
+    skillProgress:{},        // skillId  → {avgScore,completed,unlockedAt}
+    unitProgress:{},         // unitId   → {completed,unlockedAt}
+    pathProgress:{},         // pathId   → {started,completed,checkpointScore}
+    currentLesson:null,      // {lessonId, activityIdx, scores[]}
+  };
 }
 function getP(){
   const p=store.players[curP];
@@ -2261,7 +2665,8 @@ function go(id){
   window.scrollTo(0,0);
   if(id==='s-parent')renderParent();
   if(id==='s-players'){renderProfiles();initLandingPage();resetTheme();}
-  if(id==='s-map')renderMap();
+  if(id==='s-map'){renderMap();}
+  if(id==='s-path')renderPathNavigator();
   // Keep player theme active on all game screens
   if(id!=='s-players'&&curP!==null&&getP())applyPlayerTheme(getP());
 }
@@ -2530,7 +2935,7 @@ function renderMap(){
 
   // Continue card
   renderContinueCard(p);
-
+  renderPathModeBtn();
   renderWorlds(p);
 }
 
@@ -2542,9 +2947,6 @@ function renderContinueCard(p){
   if(!av)return;
   av.textContent=p.av||'🦊';
 
-  const lastCat=p.lastPlayedCat;
-  const lastMode=p.lastPlayedMode;
-  const cx=getComplexity(p);
   const today=new Date().toDateString();
   const dailyDone=(p.dailyLessons||0)>=3&&p.dailyDate===today;
 
@@ -2554,6 +2956,31 @@ function renderContinueCard(p){
     sub.textContent='Come back tomorrow to keep your streak 🔥';
     return;
   }
+
+  // Path mode — show next lesson if player has path progress
+  const hasPathProg=Object.keys(p.lessonProgress||{}).length>0;
+  if(hasPathProg){
+    const pathId=autoSelectPath(p);
+    const next=nextLesson(p,pathId);
+    if(next){
+      const lesson=LESSONS[next.lessonId];
+      const skill=SKILLS[next.skillId];
+      const unit=UNITS[next.unitId];
+      const path=PATHS[pathId];
+      sup.textContent=path.icon+' '+path.label+' — '+unit.label;
+      title.textContent=skill.icon+' '+skill.label;
+      sub.textContent=lesson.label+' · '+lesson.activities.length+' activities';
+      // Make continue card launch the lesson
+      const card=document.getElementById('continue-card');
+      if(card)card.onclick=()=>startLessonById(next.lessonId);
+      return;
+    }
+  }
+
+  // Legacy world mode
+  const lastCat=p.lastPlayedCat;
+  const lastMode=p.lastPlayedMode;
+  const cx=getComplexity(p);
   if(lastCat&&CATS[lastCat]){
     const cat=CATS[lastCat];
     const catKnown=cat.cards.filter(c=>p.cardStatus[lastCat+'|'+c.w]==='known').length;
@@ -2563,13 +2990,14 @@ function renderContinueCard(p){
     title.textContent=cat.icon+' '+cat.label;
     sub.textContent=modeName+' · '+catPct+'% mastered';
   } else {
-    // First time — suggest first unlocked category
     const firstCat=WORLDS[0].cats[0];
     const cat=CATS[firstCat];
     sup.textContent='Ready to start?';
     title.textContent=cat?cat.icon+' '+cat.label:'Let\'s learn!';
     sub.textContent=cx.emoji+' '+cx.label+' · Tap to begin!';
   }
+  const card=document.getElementById('continue-card');
+  if(card)card.onclick=continueLesson;
 }
 
 function continueLesson(){
@@ -2618,6 +3046,489 @@ function isUnlocked(p,wi){
   if(wi>=ageWorldLimit(p))return false;
   return wi===0||wPct(p,WORLDS[wi-1].id)>=0.8;
 }
+
+// ════════════════════════════════════════════════════════
+//  PHASE 1 — PROGRESSION ENGINE
+// ════════════════════════════════════════════════════════
+
+// ── Unlock evaluators ────────────────────────────────────
+function pathUnlocked(p,pathId){
+  const path=PATHS[pathId];
+  if(!path)return false;
+  const age=getPlayerAge(p);
+  // Age gate
+  if(age!==null&&age<path.ageMin)return false;
+  if(pathId==='p1')return true;
+  // Must complete previous path checkpoint
+  const pathIds=Object.keys(PATHS);
+  const prevId=pathIds[pathIds.indexOf(pathId)-1];
+  return !!(prevId&&p.pathProgress?.[prevId]?.completed);
+}
+
+function unitUnlocked(p,unitId){
+  const unit=UNITS[unitId];
+  if(!unit)return false;
+  if(!pathUnlocked(p,unit.pathId))return false;
+  const rule=unit.unlock;
+  if(rule.type==='path_start')return true;
+  if(rule.type==='complete_unit')return !!(p.unitProgress?.[rule.unitId]?.completed);
+  return false;
+}
+
+function skillUnlocked(p,skillId){
+  const skill=SKILLS[skillId];
+  if(!skill)return false;
+  if(!unitUnlocked(p,skill.unitId))return false;
+  const rule=skill.unlock;
+  if(rule.type==='unit_start')return true;
+  if(rule.type==='complete_skill')return !!(p.skillProgress?.[rule.skillId]?.completed);
+  return false;
+}
+
+function lessonUnlocked(p,lessonId){
+  const lesson=LESSONS[lessonId];
+  if(!lesson)return false;
+  if(!skillUnlocked(p,lesson.skillId))return false;
+  const rule=lesson.unlock;
+  if(rule.type==='skill_start')return true;
+  if(rule.type==='complete_lesson')return !!(p.lessonProgress?.[rule.lessonId]?.completed);
+  return false;
+}
+
+// ── Score a completed lesson (0–100) ────────────────────
+function lessonScore(activityScores){
+  if(!activityScores||!activityScores.length)return 0;
+  return Math.round(activityScores.reduce((s,v)=>s+v,0)/activityScores.length);
+}
+
+function scoreToStars(score){
+  if(score>=90)return 3;
+  if(score>=70)return 2;
+  if(score>=50)return 1;
+  return 0;
+}
+
+// ── Record a completed lesson & cascade unlocks ─────────
+function completeLessonProgress(p,lessonId,activityScores){
+  const score=lessonScore(activityScores);
+  const stars=scoreToStars(score);
+  const prev=p.lessonProgress[lessonId]||{attempts:0,bestScore:0,stars:0};
+  p.lessonProgress[lessonId]={
+    attempts:(prev.attempts||0)+1,
+    bestScore:Math.max(prev.bestScore||0,score),
+    stars:Math.max(prev.stars||0,stars),
+    completed:score>=70,
+    unlockedAt:prev.unlockedAt||Date.now(),
+    lastAt:Date.now(),
+  };
+  // Cascade to skill
+  const lesson=LESSONS[lessonId];
+  if(lesson)cascadeSkill(p,lesson.skillId);
+  saveStore();
+  return{score,stars};
+}
+
+function cascadeSkill(p,skillId){
+  const skill=SKILLS[skillId];
+  if(!skill)return;
+  const lessons=skill.lessons;
+  const completed=lessons.filter(lid=>p.lessonProgress[lid]?.completed);
+  if(completed.length===lessons.length){
+    const scores=lessons.map(lid=>p.lessonProgress[lid]?.bestScore||0);
+    const avg=Math.round(scores.reduce((s,v)=>s+v,0)/scores.length);
+    p.skillProgress[skillId]={completed:avg>=80,avgScore:avg,unlockedAt:p.skillProgress[skillId]?.unlockedAt||Date.now()};
+    if(p.skillProgress[skillId].completed)cascadeUnit(p,skill.unitId);
+  }
+}
+
+function cascadeUnit(p,unitId){
+  const unit=UNITS[unitId];
+  if(!unit)return;
+  const allSkillsDone=unit.skills.every(sid=>p.skillProgress[sid]?.completed);
+  if(allSkillsDone){
+    p.unitProgress[unitId]={completed:true,unlockedAt:p.unitProgress[unitId]?.unlockedAt||Date.now()};
+    // Check if all units in path done
+    const path=PATHS[unit.pathId];
+    if(path){
+      const allUnitsDone=path.units.every(uid=>p.unitProgress[uid]?.completed);
+      if(allUnitsDone&&!p.pathProgress[unit.pathId]?.completed){
+        p.pathProgress[unit.pathId]={...(p.pathProgress[unit.pathId]||{}),checkpointReady:true};
+      }
+    }
+  }
+}
+
+// ── Complete a checkpoint ────────────────────────────────
+function completeCheckpoint(p,checkpointId,score){
+  const cp=CHECKPOINTS[checkpointId];
+  if(!cp)return;
+  if(score>=cp.minScore){
+    p.pathProgress[cp.pathId]={...(p.pathProgress[cp.pathId]||{}),completed:true,checkpointScore:score};
+    // Auto-unlock next path if age-appropriate
+    const pathIds=Object.keys(PATHS);
+    const nextIdx=pathIds.indexOf(cp.pathId)+1;
+    if(nextIdx<pathIds.length)p.pathProgress[pathIds[nextIdx]]={...(p.pathProgress[pathIds[nextIdx]]||{}),started:false};
+  }
+  saveStore();
+  return score>=cp.minScore;
+}
+
+// ── Path auto-select for new players ────────────────────
+function autoSelectPath(p){
+  if(p.activePath)return p.activePath;
+  const age=getPlayerAge(p);
+  if(age===null||age<=5)return 'p1';
+  if(age<=7) return 'p2';
+  if(age<=8) return 'p3';
+  if(age<=9) return 'p4';
+  return 'p5';
+}
+
+// ── Query progress stats ─────────────────────────────────
+function pathProgress(p,pathId){
+  const path=PATHS[pathId];
+  if(!path)return{total:0,done:0,pct:0};
+  let total=0,done=0;
+  path.units.forEach(uid=>{
+    const unit=UNITS[uid];
+    if(!unit)return;
+    unit.skills.forEach(sid=>{
+      const skill=SKILLS[sid];
+      if(!skill)return;
+      skill.lessons.forEach(lid=>{total++;if(p.lessonProgress?.[lid]?.completed)done++;});
+    });
+  });
+  return{total,done,pct:total>0?Math.round(done/total*100):0};
+}
+
+function nextLesson(p,pathId){
+  const path=PATHS[pathId||p.activePath||'p1'];
+  if(!path)return null;
+  for(const uid of path.units){
+    const unit=UNITS[uid];
+    if(!unit||!unitUnlocked(p,uid))continue;
+    for(const sid of unit.skills){
+      const skill=SKILLS[sid];
+      if(!skill||!skillUnlocked(p,sid))continue;
+      for(const lid of skill.lessons){
+        if(!p.lessonProgress?.[lid]?.completed&&lessonUnlocked(p,lid))return{lessonId:lid,skillId:sid,unitId:uid,pathId};
+      }
+    }
+  }
+  return null; // path complete
+}
+
+// ── Start a lesson (activity runner) ────────────────────
+let currentLessonId=null,currentActIdx=0,lessonActivityScores=[];
+
+function startLessonById(lessonId){
+  const lesson=LESSONS[lessonId];
+  if(!lesson){console.warn('Lesson not found:',lessonId);return;}
+  currentLessonId=lessonId;
+  currentActIdx=0;
+  lessonActivityScores=[];
+  runNextActivity();
+}
+
+// ── Lesson mode flag — set when a lesson is running ──────
+let _lessonMode=false; // true while inside a startLessonById session
+
+function startLessonById(lessonId){
+  const lesson=LESSONS[lessonId];
+  if(!lesson){console.warn('Lesson not found:',lessonId);return;}
+  currentLessonId=lessonId;
+  currentActIdx=0;
+  lessonActivityScores=[];
+  _lessonMode=true;
+  runNextActivity();
+}
+
+function runNextActivity(){
+  const lesson=LESSONS[currentLessonId];
+  if(!lesson)return;
+  if(currentActIdx>=lesson.activities.length){
+    finishLesson();
+    return;
+  }
+  const act=lesson.activities[currentActIdx];
+  activeCat=act.catKey||null;
+  // Update activity indicator in play header
+  const ind=document.getElementById('lesson-act-indicator');
+  if(ind){
+    ind.style.display='block';
+    ind.textContent='Activity '+(currentActIdx+1)+' / '+lesson.activities.length;
+  }
+  startGame(act.gameType);
+}
+
+function _advanceLesson(score){
+  // Called by each game's end handler when _lessonMode is true
+  lessonActivityScores.push(score==null?70:score);
+  currentActIdx++;
+  if(currentActIdx<(LESSONS[currentLessonId]?.activities?.length||0)){
+    // Brief pause then next activity
+    setTimeout(()=>runNextActivity(),600);
+  }else{
+    finishLesson();
+  }
+}
+
+function recordActivityScore(score){
+  _advanceLesson(score);
+}
+
+function finishLesson(){
+  const p=getP();
+  if(!p||!currentLessonId)return;
+  const lid=currentLessonId;
+  const scores=[...lessonActivityScores];
+  _lessonMode=false;
+  currentLessonId=null;
+  currentActIdx=0;
+  lessonActivityScores=[];
+  const{score,stars}=completeLessonProgress(p,lid,scores);
+  // Store which skill to return to
+  const lesson=LESSONS[lid];
+  if(lesson)p._lastCompletedSkill=lesson.skillId;
+  showCelebration();
+}
+
+// ════════════════════════════════════════════════════════
+//  PATH NAVIGATOR UI
+// ════════════════════════════════════════════════════════
+
+let currentPathId='p1';
+
+function togglePathMode(){
+  const p=getP();
+  if(!p)return;
+  // Auto-select best path for this player
+  currentPathId=autoSelectPath(p);
+  go('s-path');
+  renderPathNavigator();
+}
+
+function renderPathNavigator(){
+  const p=getP();
+  if(!p)return;
+
+  // Title
+  const path=PATHS[currentPathId];
+  document.getElementById('path-title').textContent=path.label;
+  document.getElementById('path-subtitle').textContent=path.icon+' '+Object.keys(PATHS).indexOf(currentPathId+1)+' of '+Object.keys(PATHS).length+' paths';
+
+  // Path selector pills
+  const sel=document.getElementById('path-selector');
+  sel.innerHTML=Object.values(PATHS).map(pp=>{
+    const unlocked=pathUnlocked(p,pp.id);
+    const active=pp.id===currentPathId;
+    return`<button class="path-pill${active?' active':''}${!unlocked?' locked':''}"
+      onclick="switchPath('${pp.id}')">${pp.icon} ${pp.label}</button>`;
+  }).join('');
+
+  // Overall path progress bar
+  const prog=pathProgress(p,currentPathId);
+  document.getElementById('path-prog-fill').style.background=path.color;
+  document.getElementById('path-prog-fill').style.width=prog.pct+'%';
+  document.getElementById('path-prog-label').textContent=prog.done+' / '+prog.total+' lessons';
+  document.getElementById('path-prog-pct').textContent=prog.pct+'%';
+
+  // Build unit trail
+  const trail=document.getElementById('path-trail');
+  trail.innerHTML='';
+
+  path.units.forEach(unitId=>{
+    const unit=UNITS[unitId];
+    if(!unit)return;
+    const unlocked=unitUnlocked(p,unitId);
+    const unitDone=!!(p.unitProgress?.[unitId]?.completed);
+
+    // Count skill/lesson progress for this unit
+    let totalLessons=0,doneLessons=0;
+    unit.skills.forEach(sid=>{
+      const sk=SKILLS[sid];if(!sk)return;
+      sk.lessons.forEach(lid=>{totalLessons++;if(p.lessonProgress?.[lid]?.completed)doneLessons++;});
+    });
+
+    const block=document.createElement('div');
+    block.className='unit-block'+(unlocked?'':' locked');
+    block.innerHTML=`
+      <div class="unit-hdr" onclick="toggleUnit('${unitId}',this)">
+        <div class="unit-icon" style="background:${unit.color}22;color:${unit.color}">${unit.icon}</div>
+        <div style="flex:1;min-width:0">
+          <div class="unit-title">${unit.label}</div>
+          <div style="font-size:11px;color:var(--text3);font-weight:600;margin-top:2px">${doneLessons}/${totalLessons} lessons</div>
+        </div>
+        <span class="unit-badge" style="background:${unit.color}22;color:${unit.color}">${unitDone?'✓ Done':unlocked?'Open':'🔒 Locked'}</span>
+        <span class="unit-chevron">▾</span>
+      </div>
+      <div class="unit-body" id="unit-body-${unitId}" style="display:none">
+        ${unit.skills.map(sid=>renderSkillRow(p,sid,unit.color)).join('')}
+      </div>
+    `;
+
+    // Auto-open current active unit
+    if(unlocked&&!unitDone)setTimeout(()=>openUnit(unitId),50);
+
+    trail.appendChild(block);
+  });
+
+  // Checkpoint button at bottom
+  const allUnitsDone=path.units.every(uid=>p.unitProgress?.[uid]?.completed);
+  const cpDone=!!(p.pathProgress?.[currentPathId]?.completed);
+  const cpBtn=document.createElement('button');
+  cpBtn.className='checkpoint-btn'+(allUnitsDone?'':' locked');
+  cpBtn.innerHTML='🏆 '+(cpDone?'Checkpoint passed ✓':'Final Checkpoint');
+  cpBtn.onclick=()=>startCheckpoint(path.checkpoint);
+  trail.appendChild(cpBtn);
+}
+
+function renderSkillRow(p,skillId,unitColor){
+  const skill=SKILLS[skillId];
+  if(!skill)return'';
+  const unlocked=skillUnlocked(p,skillId);
+  const skillDone=!!(p.skillProgress?.[skillId]?.completed);
+  const lessons=skill.lessons;
+  const doneLessons=lessons.filter(lid=>p.lessonProgress?.[lid]?.completed).length;
+
+  const dots=lessons.map(lid=>{
+    const lp=p.lessonProgress?.[lid];
+    const cls=lp?.completed?'done':lp?.attempts>0?'partial':'';
+    return`<div class="skill-dot ${cls}"></div>`;
+  }).join('');
+
+  return`
+    <div class="skill-row">
+      <div class="skill-icon" style="background:${unitColor}22;color:${unitColor}">${skill.icon}</div>
+      <div class="skill-info">
+        <div class="skill-name">${skill.label}</div>
+        <div class="skill-meta">${doneLessons} / ${lessons.length} lessons${skillDone?' · ✓ Complete':''}</div>
+        <div class="skill-prog">${dots}</div>
+      </div>
+      <button class="skill-cta${!unlocked?' locked':skillDone?' done':''}"
+        onclick="${unlocked?`openSkillDetail('${skillId}')`:''}">${skillDone?'Review':(!unlocked?'🔒':'Start')}</button>
+    </div>`;
+}
+
+function toggleUnit(unitId,hdr){
+  const body=document.getElementById('unit-body-'+unitId);
+  if(!body)return;
+  const open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  const chevron=hdr.querySelector('.unit-chevron');
+  if(chevron)chevron.style.transform=open?'':'rotate(180deg)';
+}
+
+function openUnit(unitId){
+  const body=document.getElementById('unit-body-'+unitId);
+  if(!body||body.style.display==='block')return;
+  body.style.display='block';
+  const block=body.closest('.unit-block');
+  const chevron=block?.querySelector('.unit-chevron');
+  if(chevron)chevron.style.transform='rotate(180deg)';
+}
+
+function switchPath(pathId){
+  const p=getP();
+  if(!pathUnlocked(p,pathId))return;
+  currentPathId=pathId;
+  renderPathNavigator();
+}
+
+function openSkillDetail(skillId){
+  const skill=SKILLS[skillId];
+  if(!skill)return;
+  const p=getP();
+
+  // Build lesson screen
+  document.getElementById('lesson-title').textContent=skill.label;
+  const unit=UNITS[skill.unitId];
+  document.getElementById('lesson-skill-label').textContent=(unit?.label||'')+' · '+skill.lessons.length+' lessons';
+
+  const acts=document.getElementById('lesson-acts');
+  acts.innerHTML=skill.lessons.map((lid,i)=>{
+    const lesson=LESSONS[lid];
+    if(!lesson)return'';
+    const lp=p.lessonProgress?.[lid];
+    const unlocked=lessonUnlocked(p,lid);
+    const done=!!(lp?.completed);
+    const stars=lp?.stars||0;
+    const starStr=done?('⭐'.repeat(stars)+'☆'.repeat(3-stars)):'';
+    const numCls=done?'done':!unlocked?'locked':'';
+    const gameLabels=lesson.activities.map(a=>a.gameType.replace('_','\u00a0')).join(' → ');
+    return`
+      <div class="lesson-row${!unlocked?' locked':''}" onclick="${unlocked?`selectLesson('${lid}')`:''}" data-lid="${lid}">
+        <div class="lesson-num ${numCls}">${done?'✓':i+1}</div>
+        <div style="flex:1;min-width:0">
+          <div class="lesson-label">${lesson.label}</div>
+          <div style="margin-top:3px">${lesson.activities.map(a=>`<span class="act-pill">${a.gameType.replace('_',' ')}</span>`).join('')}</div>
+        </div>
+        <div class="lesson-stars">${starStr}</div>
+      </div>`;
+  }).join('');
+
+  // Start button — launch next incomplete lesson
+  const nextLid=skill.lessons.find(lid=>lessonUnlocked(p,lid)&&!p.lessonProgress?.[lid]?.completed)||
+                skill.lessons.find(lid=>lessonUnlocked(p,lid));
+  const btn=document.getElementById('lesson-start-btn');
+  if(nextLid){
+    btn.onclick=()=>selectLesson(nextLid);
+    btn.style.display='block';
+    btn.textContent='▶ '+(p.lessonProgress?.[nextLid]?.attempts?'Continue':'Start next lesson');
+  } else {
+    btn.style.display='none';
+  }
+
+  go('s-lesson');
+}
+
+function selectLesson(lessonId){
+  const lesson=LESSONS[lessonId];
+  if(!lesson)return;
+  const p=getP();
+  if(!lessonUnlocked(p,lessonId))return;
+
+  // Highlight selected row
+  document.querySelectorAll('#lesson-acts .lesson-row').forEach(r=>{
+    r.style.background=r.dataset.lid===lessonId?'var(--purple-l)':'';
+  });
+
+  // Update start button
+  const btn=document.getElementById('lesson-start-btn');
+  btn.textContent='▶ Start: '+lesson.label;
+  btn.onclick=()=>beginLesson(lessonId);
+  btn.style.display='block';
+}
+
+function beginLesson(lessonId){
+  const lid=lessonId||currentLessonId;
+  if(!lid){console.warn('No lesson selected');return;}
+  startLessonById(lid);
+}
+
+function startCheckpoint(checkpointId){
+  const cp=CHECKPOINTS[checkpointId];
+  if(!cp)return;
+  // Launch first activity of checkpoint — for now use timer blitz on mixed cats
+  activeCat=null;
+  startGame('timer');
+}
+
+// Update path btn icon on map based on mode
+function renderPathModeBtn(){
+  const p=getP();
+  if(!p)return;
+  const btn=document.getElementById('path-mode-btn');
+  if(!btn)return;
+  // Show path icon coloured if player has an active path
+  const hasProg=p.activePath||Object.keys(p.lessonProgress||{}).length>0;
+  btn.style.background=hasProg?'var(--purple-l)':'';
+  btn.style.borderColor=hasProg?'var(--purple)':'';
+  btn.textContent=hasProg?'📚':'🗺️';
+  btn.title=hasProg?'Continue path learning':'Start path learning';
+}
+
+
 
 function toggleWorldLock(wi){
   const p=getP();
@@ -3017,6 +3928,17 @@ function startGame(mode){
   if(mode==='timer'){startTimerGame();return;}
   if(mode==='listen'){startListenGame();return;}
   if(mode==='sayit'){startSayItGame();return;}
+  // Phase 3 game types — fall back to closest existing game until built
+  const p3fallback={
+    'addition_tap':'first-letter','missing_number':'match',
+    'compare':'match','sentence_builder':'spell',
+    'fill_blank':'match','true_false':'match',
+    'odd_one_out':'match','multiply_tap':'first-letter',
+    'division_tap':'first-letter','fraction_builder':'match',
+  };
+  if(p3fallback[mode]){
+    gMode=p3fallback[mode]; // use fallback mode for rendering
+  }
   sessStatus={};sessStars=0;dIdx=0;spellProg=[];sessStreak=0;recentAnswers=[];
   initHearts();
   buildDeck(activeCat);
@@ -3025,10 +3947,12 @@ function startGame(mode){
   if(!p.lastSeenDate)p.lastSeenDate={};
   if(activeCat)p.lastSeenDate[activeCat]=Date.now();
   else Object.keys(CATS).forEach(k=>p.lastSeenDate[k]=Date.now());
-  // Track for Continue button
   p.lastPlayedCat=activeCat;
   p.lastPlayedMode=mode;
   saveStore();
+  // Hide lesson indicator unless in lesson mode (runNextActivity sets it)
+  const ind=document.getElementById('lesson-act-indicator');
+  if(ind&&!_lessonMode)ind.style.display='none';
   document.getElementById('play-cat').textContent=activeCat?(CATS[activeCat]?.label||'All'):'All categories';
   renderPlayCard();
   go('s-play');
@@ -3540,7 +4464,16 @@ function endPlay(){
   if(onListen||onSayIt){endVoiceGame();return;}
   if(!onArrow&&!onMap){const p=getP();Object.assign(p.cardStatus,sessStatus);saveStore();}
   window.speechSynthesis?.cancel();
-  spellProg=[];go('s-map');
+  spellProg=[];
+  if(_lessonMode){
+    // Score this activity by % of cards answered correctly
+    const total=deck.length||1;
+    const known=Object.values(sessStatus).filter(v=>v==='known').length;
+    const score=Math.round(known/total*100);
+    _advanceLesson(score);
+  } else {
+    go('s-map');
+  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -3717,8 +4650,16 @@ function closeCelebration(){
   document.getElementById('overlay-cel').classList.remove('on');
   const btn=document.querySelector('#overlay-cel button');
   if(btn)btn.textContent='Keep going! 🚀';
-  _flushStore(); // end of lesson = good flush point
-  go('s-map');
+  _flushStore();
+  const p=getP();
+  const lastSkill=p?._lastCompletedSkill;
+  if(lastSkill&&SKILLS[lastSkill]){
+    // Return to skill detail so player sees updated stars and next lesson
+    if(p)p._lastCompletedSkill=null;
+    openSkillDetail(lastSkill);
+  } else {
+    go('s-map');
+  }
 }
 function spawnConfetti(count=42){
   const t=getP()?THEMES[getP().favColor||'purple']:THEMES.purple;
@@ -4933,10 +5874,14 @@ function endTimerGame(){
   document.getElementById('cel-xp-gain').textContent='+'+xpGained+' XP ⚡';
   document.getElementById('cel-streak-row').style.display='none';
   document.getElementById('cel-new-words').style.display='none';
-  document.getElementById('overlay-cel').classList.add('on');
-  spawnConfetti(tbScore>=8?60:30);
   const p=getP();p.stars=(p.stars||0)+tbScore;saveStore();
   recordLessonComplete();
+  if(_lessonMode){
+    _advanceLesson(pct);
+  } else {
+    document.getElementById('overlay-cel').classList.add('on');
+    spawnConfetti(tbScore>=8?60:30);
+  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -5091,11 +6036,15 @@ function endVoiceListenGame(){
   document.getElementById('cel-xp-gain').textContent='+'+xpGained+' XP ⚡';
   document.getElementById('cel-new-words').style.display='none';
   document.getElementById('cel-streak-row').style.display='none';
-  document.getElementById('overlay-cel').classList.add('on');
-  spawnConfetti(vlScore>=8?60:30);playSound('celebrate');
-  speak(pct>=90?'Amazing! You are a super listener!':'Well done! Keep practising!');
   const p=getP();p.stars=(p.stars||0)+vlScore;saveStore();
   recordLessonComplete();
+  if(_lessonMode){
+    _advanceLesson(pct);
+  } else {
+    document.getElementById('overlay-cel').classList.add('on');
+    spawnConfetti(vlScore>=8?60:30);playSound('celebrate');
+    speak(pct>=90?'Amazing! You are a super listener!':'Well done! Keep practising!');
+  }
 }
 
 // ════════════════════════════════════════════════════════
