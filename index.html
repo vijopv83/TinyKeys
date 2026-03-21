@@ -4816,8 +4816,15 @@ const VL_TOTAL=10;
 
 function startListenGame(){
   vlDeck=[];vlIdx=0;vlScore=0;
+  const cx=getComplexity(getP());
+  const isYoung=cx.level==='beginner'||cx.level==='easy';
   const keys=activeCat?[activeCat]:Object.keys(CATS);
-  keys.forEach(k=>{if(CATS[k])CATS[k].cards.forEach(c=>vlDeck.push({...c,cat:k}));});
+  keys.forEach(k=>{
+    if(!CATS[k])return;
+    // Skip numbers in mixed mode for young kids — confusing alongside pictures
+    if(isYoung&&!activeCat&&k==='numbers')return;
+    CATS[k].cards.forEach(c=>vlDeck.push({...c,cat:k}));
+  });
   for(let i=vlDeck.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[vlDeck[i],vlDeck[j]]=[vlDeck[j],vlDeck[i]];}
   vlDeck=vlDeck.slice(0,VL_TOTAL);
   const p=getP();p.totalSessions=(p.totalSessions||0)+1;saveStore();
@@ -4831,6 +4838,8 @@ function renderVlCard(){
   const cx=getComplexity(getP());
   const nChoices=Math.max(2,Math.min(4,cx.choices));
   vlCorrectCard=vlDeck[vlIdx];
+  const isNum=vlCorrectCard.cat==='numbers';
+  const isYoung=cx.level==='beginner'||cx.level==='easy';
 
   document.getElementById('vl-cnt').textContent=(vlIdx+1)+' / '+VL_TOTAL;
   document.getElementById('vl-score').textContent='⭐ '+vlScore;
@@ -4838,22 +4847,37 @@ function renderVlCard(){
   document.getElementById('vl-instruction').textContent='Tap to hear the word!';
   document.getElementById('vl-pip-txt').textContent='Listen, then tap the right picture!';
 
-  // Build image choices
-  const allCards=Object.values(CATS).flatMap(cat=>cat.cards.map(c=>({...c})));
-  const others=allCards.filter(c=>c.w!==vlCorrectCard.w).sort(()=>Math.random()-.5).slice(0,nChoices-1);
+  // Distractors from SAME category — visually coherent
+  const sameCatCards=(CATS[vlCorrectCard.cat]?.cards||[]).filter(c=>c.w!==vlCorrectCard.w);
+  const others=sameCatCards.sort(()=>Math.random()-.5).slice(0,nChoices-1);
+  // Pad from other cats only if not enough
+  if(others.length<nChoices-1){
+    const extra=Object.values(CATS).flatMap(cat=>cat.cards)
+      .filter(c=>c.w!==vlCorrectCard.w&&!others.find(o=>o.w===c.w))
+      .sort(()=>Math.random()-.5).slice(0,nChoices-1-others.length);
+    others.push(...extra);
+  }
   const choices=[vlCorrectCard,...others].sort(()=>Math.random()-.5);
 
   const grid=document.getElementById('vl-choices');
-  grid.style.gridTemplateColumns=nChoices<=2?'1fr 1fr':'1fr 1fr';
-  grid.innerHTML=choices.map(c=>`
-    <button onclick="vlAnswer('${c.w.replace(/'/g,"\\'")}','${vlCorrectCard.w.replace(/'/g,"\\'")}','${c.cat||''}')" style="
-      padding:16px 8px;border-radius:var(--rs);border:2.5px solid var(--border);
+  grid.style.gridTemplateColumns='1fr 1fr';
+  grid.innerHTML=choices.map(c=>{
+    // Numbers → show big bold digit; others → show emoji
+    const visual=isNum
+      ?`<span style="font-size:72px;font-weight:900;line-height:1;color:#633806;font-family:'Nunito',sans-serif">${c.l}</span>`
+      :`<span style="font-size:56px;line-height:1">${c.e}</span>`;
+    // Only show word label if child can read (medium+)
+    const label=(!isYoung)
+      ?`<span style="font-size:13px;font-weight:800;color:var(--text2)">${c.w}</span>`
+      :'';
+    return `<button onclick="vlAnswer('${c.w.replace(/'/g,"\\'")}','${vlCorrectCard.w.replace(/'/g,"\\'")}','${c.cat||''}')" style="
+      padding:22px 8px;border-radius:var(--rs);border:2.5px solid var(--border);
       background:var(--surface);cursor:pointer;transition:all .15s;
-      display:flex;flex-direction:column;align-items:center;gap:6px"
+      display:flex;flex-direction:column;align-items:center;gap:10px"
       data-word="${c.w}">
-      <span style="font-size:48px;line-height:1">${c.e}</span>
-      <span style="font-size:11px;font-weight:800;color:var(--text2)">${c.w}</span>
-    </button>`).join('');
+      ${visual}${label}
+    </button>`;
+  }).join('');
 
   // Auto-speak after short delay
   setTimeout(()=>vlSpeak(),400);
